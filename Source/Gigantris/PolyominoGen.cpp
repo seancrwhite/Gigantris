@@ -11,6 +11,8 @@ TArray<FString> UPolyominoGen::CalcStringArray(int pieceSize)
 	int** tArray;
 
 	UE_LOG(LogTemp, Display, TEXT("Generating piece of size %i"), pieceSize);
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Generating piece of size %i"), pieceSize));
 
 	if (FMath::RandRange(0, 14) == 0) 
 	{
@@ -28,9 +30,6 @@ TArray<FString> UPolyominoGen::CalcStringArray(int pieceSize)
 	else 
 	{
 		tArray = UPolyominoGen::BuildBlockArray(pieceSize);
-
-		
-		// calculate unique number based on seed generrated from the rotated array
 	}
 	
 	return UPolyominoGen::BuildStringArrayFromInts(pieceSize, tArray);
@@ -39,6 +38,8 @@ TArray<FString> UPolyominoGen::CalcStringArray(int pieceSize)
 int** UPolyominoGen::BuildBlockArray(int pieceSize)
 {
 	UE_LOG(LogTemp, Display, TEXT("Building block array"));
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Building block array")));
 
 	UPROPERTY()
 	int** tArray = new int* [pieceSize];
@@ -141,6 +142,8 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 				break;
 			default:
 				UE_LOG(LogTemp, Error, TEXT("Hit failsafe in BuildBlockArray"));
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Hit failsafe in BuildBlockArray")));
 				break;
 			}
 		}
@@ -152,6 +155,8 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 TArray<FString> UPolyominoGen::BuildStringArrayFromInts(int pieceSize, int** tArray)
 {
 	UE_LOG(LogTemp, Display, TEXT("Building string array"));
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Building string array")));
 	TArray<FString> StringArray;
 
 	for (int i = 0; i < pieceSize; i++)
@@ -174,12 +179,14 @@ TArray<FString> UPolyominoGen::BuildStringArrayFromInts(int pieceSize, int** tAr
 
 	for (FString N : StringArray) {
 		UE_LOG(LogTemp, Display, TEXT("%s"), *N);
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *N));
 	}
 	return StringArray;
 }
 
 // TODO use if have time, otherwise delete
-void Rotate(int pieceSize, int** tArray) {
+void RotateInPlace(int pieceSize, int** tArray) {
 	// find flattest side(s)
 	UPROPERTY()
 	int leftSize = 0, rightSize = 0, topSize = 0, bottomSize = 0;
@@ -203,8 +210,8 @@ void Rotate(int pieceSize, int** tArray) {
 
 	// rotate array so flattest side is on bottom
 	//    in case of 3, put least flat side on top
-	if (max == bottomSize) {} // if the bottom is already the flattest, do nothing
-	else if (max == rightSize)
+	// if the bottom is already the flattest, do nothing
+	if (max == rightSize)
 	{
 		// TODO rotate 90
 	}
@@ -221,7 +228,7 @@ void Rotate(int pieceSize, int** tArray) {
 	//    if 2 -> 2 rotations (0 and 90)
 	//    if 4 -> 1 rotation  (0)
 	//    else -> 4 rotations (0, -90, 180, and 90)
-	UPROPERTY()
+	/*UPROPERTY()
 	int numFlatSides = 0;
-	if (max == bottomSize) numFlatSides++;
+	if (max == bottomSize) numFlatSides++;*/
 }
