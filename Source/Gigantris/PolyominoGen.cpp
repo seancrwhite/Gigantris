@@ -8,38 +8,34 @@ UFUNCTION()
 TArray<FString> UPolyominoGen::CalcStringArray(int pieceSize)
 {
 	UPROPERTY()
-	int** tArray;
+	int** blockArray;
 
 	UE_LOG(LogTemp, Display, TEXT("Generating piece of size %i"), pieceSize);
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Generating piece of size %i"), pieceSize));
 
-	if (FMath::RandRange(0, 14) == 0) 
+	if (FMath::RandRange(0, 7) == 0) 
 	{
 		UE_LOG(LogTemp, Display, TEXT("Forcing line piece"));
-		tArray = new int* [1];
-		tArray[0] = new int[pieceSize];
-		for (int i = 0; i < pieceSize; i++) tArray[0][i] = 1;
+		blockArray = new int* [1];
+		blockArray[0] = new int[pieceSize];
+		for (int i = 0; i < pieceSize; i++) blockArray[0][i] = 1;
 		for (int i = 1; i < pieceSize; i++)
 		{
-			tArray[i] = new int[pieceSize];
+			blockArray[i] = new int[pieceSize];
 			for (int j = 0; j < pieceSize; j++)
-				tArray[i][j] = 0;
+				blockArray[i][j] = 0;
 		}
 	}
 	else 
 	{
-		tArray = UPolyominoGen::BuildBlockArray(pieceSize);
+		blockArray = UPolyominoGen::BuildBlockArray(pieceSize);
 	}
 	
-	return UPolyominoGen::BuildStringArrayFromInts(pieceSize, tArray);
+	return UPolyominoGen::BuildStringArrayFromInts(pieceSize, blockArray);
 }
 
 int** UPolyominoGen::BuildBlockArray(int pieceSize)
 {
 	UE_LOG(LogTemp, Display, TEXT("Building block array"));
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Building block array")));
 
 	UPROPERTY()
 	int** tArray = new int* [pieceSize];
@@ -76,6 +72,7 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 			int row = coord[1];
 			UPROPERTY()
 			int col = coord[0];
+			//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Target: [%i,%i]"), row, col));
 
 			UPROPERTY()
 			int left = 1, right = 1, up = 1, down = 1;
@@ -131,7 +128,7 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 				{
 					left = tArray[col][row - 1];
 					if (left == 0) {
-						tArray[col][row - 1];
+						tArray[col][row - 1] = 1;
 						coords[blocksInserted] = new int[2];
 						coords[blocksInserted][0] = col;
 						coords[blocksInserted][1] = row - 1;
@@ -142,8 +139,6 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 				break;
 			default:
 				UE_LOG(LogTemp, Error, TEXT("Hit failsafe in BuildBlockArray"));
-				if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Hit failsafe in BuildBlockArray")));
 				break;
 			}
 		}
@@ -155,8 +150,6 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 TArray<FString> UPolyominoGen::BuildStringArrayFromInts(int pieceSize, int** tArray)
 {
 	UE_LOG(LogTemp, Display, TEXT("Building string array"));
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Building string array")));
 	TArray<FString> StringArray;
 
 	for (int i = 0; i < pieceSize; i++)
@@ -179,8 +172,6 @@ TArray<FString> UPolyominoGen::BuildStringArrayFromInts(int pieceSize, int** tAr
 
 	for (FString N : StringArray) {
 		UE_LOG(LogTemp, Display, TEXT("%s"), *N);
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *N));
 	}
 	return StringArray;
 }
