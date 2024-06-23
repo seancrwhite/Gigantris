@@ -10,11 +10,8 @@ TArray<FString> UPolyominoGen::CalcStringArray(int pieceSize)
 	UPROPERTY()
 	int** blockArray;
 
-	UE_LOG(LogTemp, Display, TEXT("Generating piece of size %i"), pieceSize);
-
 	if (FMath::RandRange(0, 7) == 0) 
 	{
-		UE_LOG(LogTemp, Display, TEXT("Forcing line piece"));
 		blockArray = new int* [1];
 		blockArray[0] = new int[pieceSize];
 		for (int i = 0; i < pieceSize; i++) blockArray[0][i] = 1;
@@ -33,10 +30,9 @@ TArray<FString> UPolyominoGen::CalcStringArray(int pieceSize)
 	return UPolyominoGen::BuildStringArrayFromInts(pieceSize, blockArray);
 }
 
+UFUNCTION()
 int** UPolyominoGen::BuildBlockArray(int pieceSize)
 {
-	UE_LOG(LogTemp, Display, TEXT("Building block array"));
-
 	UPROPERTY()
 	int** tArray = new int* [pieceSize];
 	for (int i = 0; i < pieceSize; i++)
@@ -72,7 +68,6 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 			int row = coord[1];
 			UPROPERTY()
 			int col = coord[0];
-			//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Target: [%i,%i]"), row, col));
 
 			UPROPERTY()
 			int left = 1, right = 1, up = 1, down = 1;
@@ -138,7 +133,6 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 				}
 				break;
 			default:
-				UE_LOG(LogTemp, Error, TEXT("Hit failsafe in BuildBlockArray"));
 				break;
 			}
 		}
@@ -147,9 +141,9 @@ int** UPolyominoGen::BuildBlockArray(int pieceSize)
 	return tArray;
 }
 
+UFUNCTION()
 TArray<FString> UPolyominoGen::BuildStringArrayFromInts(int pieceSize, int** tArray)
 {
-	UE_LOG(LogTemp, Display, TEXT("Building string array"));
 	TArray<FString> StringArray;
 
 	for (int i = 0; i < pieceSize; i++)
@@ -170,13 +164,11 @@ TArray<FString> UPolyominoGen::BuildStringArrayFromInts(int pieceSize, int** tAr
 			break;
 	}
 
-	for (FString N : StringArray) {
-		UE_LOG(LogTemp, Display, TEXT("%s"), *N);
-	}
 	return StringArray;
 }
 
 // TODO use if have time, otherwise delete
+UFUNCTION()
 void RotateInPlace(int pieceSize, int** tArray) {
 	// find flattest side(s)
 	UPROPERTY()
